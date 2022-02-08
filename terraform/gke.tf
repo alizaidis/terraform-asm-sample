@@ -25,11 +25,22 @@ module "enabled_google_apis" {
   depends_on = [time_sleep.wait_120_seconds]
 }
 
+# google_client_config and kubernetes provider must be explicitly specified like the following.
+
+data "google_client_config" "default" {}
+
+provider "kubernetes" {
+  host                   = "https://${module.gke.endpoint}"
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(module.gke.ca_certificate)
+}
+
+
 module "gke" {
   source             = "terraform-google-modules/kubernetes-engine/google//modules/beta-public-cluster"
   version            = "~> 16.0"
   project_id         = module.enabled_google_apis.project_id
-  name               = "sfl-acm-part3"
+  name               = "asm-cluster-1"
   region             = var.region
   zones              = [var.zone]
   initial_node_count = 4
