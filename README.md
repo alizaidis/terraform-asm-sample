@@ -14,6 +14,7 @@
     ```bash
     FOLDER_ID = [FOLDER]
     BILLING_ACCOUNT = [BILLING_ACCOUNT]
+    PROJECT_ID = [PROJECT_ID]
     ```
 
 1. Create project:
