@@ -1,4 +1,4 @@
-# Build GKE cluster and Deploy Anthos Service Mesh on the cluster.
+# Build GKE cluster and deploy Anthos Service Mesh on the cluster.
 
 # Pre-requistes 
 
@@ -25,10 +25,28 @@
     gcloud alpha billing projects link $PROJECT_ID --billing-account $BILLING_ACCOUNT
     gcloud config set project $PROJECT_ID
     ```
+1. Enable the compute api for the project:
+
+    ```bash
+    gcloud services enable compute.googleapis.com --project $PROJECT_ID
+    The output is similar to the following:
+    ```
+
+
 1. Enable the service mesh feature:
 
     ```bash
-    gcloud container hub mesh enable project $PROJECT_ID
+    gcloud container hub mesh enable --project $PROJECT_ID
+
+    The output is similar to the following:
+
+    Enabling service [meshconfig.googleapis.com] on project [xxx]...
+    Operation "operations/acat.p2-1063239217441-cd1763ba-264c-4ec2-9346-2e046fc03062" finished successfully.
+    API [gkehub.googleapis.com] not enabled on project [1063239217441]. Would you like to enable and retry (this will take a few minutes)? (y/N)?  y
+
+    Enabling service [gkehub.googleapis.com] on project [xxxx]...
+    Operation "operations/acat.p2-1063239217441-4a50584e-7ee4-4702-9b61-453ba2a5ba55" finished successfully.
+    Waiting for Feature Service Mesh to be created...done. 
     ```
 
 1. Create cluster using terraform using defaults other than the project:
@@ -165,7 +183,7 @@
    ```bash
     Disable the service mesh feature:
 
-    gcloud container hub mesh disable project $PROJECT_ID
+    gcloud container hub mesh disable --project $PROJECT_ID
 
     terraform destroy -var=project=$PROJECT_ID
     ```
