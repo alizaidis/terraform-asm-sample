@@ -17,7 +17,8 @@ module "asm" {
   project_id = module.enabled_google_apis.project_id
 }
 
-provider "kubernetes" {
-  config_path    = "~/.kube/config"
-  config_context = "<add-kube-context"
-}
+# Donot need a provider here since terraform is aware about the cluster
+# provider "kubernetes" {
+#   config_path    = "~/.kube/config"
+#   config_context = "<add-kube-context>"
+# }
