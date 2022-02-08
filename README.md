@@ -29,7 +29,9 @@
 
     ```bash
     gcloud services enable compute.googleapis.com --project $PROJECT_ID
+    
     The output is similar to the following:
+    Operation "operations/acf.p2-42486643714-242126b9-b72c-49fb-b4b4-53d4dae2101e" finished successfully.
     ```
 
 
