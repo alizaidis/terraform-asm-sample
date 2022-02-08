@@ -22,7 +22,7 @@ module "enabled_google_apis" {
     "cloudresourcemanager.googleapis.com",
     "gkehub.googleapis.com"
   ]
-  depends_on = [time_sleep.wait_120_seconds]
+ 
 }
 
 # google_client_config and kubernetes provider must be explicitly specified like the following.
@@ -37,6 +37,7 @@ provider "kubernetes" {
 
 
 module "gke" {
+  depends_on         = [time_sleep.wait_120_seconds]
   source             = "terraform-google-modules/kubernetes-engine/google//modules/beta-public-cluster"
   version            = "~> 16.0"
   project_id         = module.enabled_google_apis.project_id
