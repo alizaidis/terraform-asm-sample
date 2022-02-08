@@ -1,14 +1,12 @@
-# Build Anthos Application Development platform with all feature and components on Google Cloud Platform
+# Build GKE cluster and Deploy Anthos Service Mesh on the cluster.
 
-# Pre-requistes
+# Pre-requistes 
 
 1. Install Google Cloud SDK
 2. Install Terraform
 3. Active Anthos trial license
 
-## Steps to deploy the platform:
-
-Components and features : Google Kubernetes Engine, Anthos Config Management, Anthos Config Connector, 
+## Steps to deploy the terraform
 
 1. Clone this repo
 1. Set variables that will be used in multiple commands:
@@ -26,6 +24,11 @@ Components and features : Google Kubernetes Engine, Anthos Config Management, An
     gcloud projects create $PROJECT_ID --name=$PROJECT_ID --folder=$FOLDER_ID
     gcloud alpha billing projects link $PROJECT_ID --billing-account $BILLING_ACCOUNT
     gcloud config set project $PROJECT_ID
+    ```
+1. Enable the service mesh feature:
+
+    ```bash
+    gcloud container hub mesh enable project $PROJECT_ID
     ```
 
 1. Create cluster using terraform using defaults other than the project:
@@ -160,7 +163,9 @@ Components and features : Google Kubernetes Engine, Anthos Config Management, An
 1. Finally, let's clean up. Apply `terraform destroy` to remove the GCP resources that were deployed to the project.
 
    ```bash
-    fg # ctrl-c
+    Disable the service mesh feature:
+
+    gcloud container hub mesh disable project $PROJECT_ID
 
     terraform destroy -var=project=$PROJECT_ID
     ```
