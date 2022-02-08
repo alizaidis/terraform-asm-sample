@@ -166,7 +166,6 @@
     Disable the service mesh feature:
 
     gcloud container hub mesh disable project $PROJECT_ID
- 
 
     terraform destroy -var=project=$PROJECT_ID
     ```
