@@ -69,7 +69,7 @@
 1. To verify things have sync'ed, you can use `gcloud` to check status:
 
     ```bash
-    gcloud alpha container hub config-management status --project $PROJECT_ID
+    gcloud alpha container hub memberships list --project $PROJECT_ID
     ```
 
 1. To review the state the of asm installation, lets inspect the cluster:
@@ -79,7 +79,7 @@
 
 
     # First lets get the credentials for the GKE cluster 
-    gcloud container clusters get-credentials $CLUSTER_NAME --zone $CLUSTER_ZONE --project $PROJECT_ID
+    gcloud container clusters get-credentials "asm-cluster-1"--region "us-central1"--project $PROJECT_ID
 
 
     # Inspect the state of controlplanerevision CustomResource
