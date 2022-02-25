@@ -1,30 +1,44 @@
-# # Place holder to add customer vpc if required for gke clusters
-# module "vpc" {
-#   source       = "terraform-google-modules/network/google"
-#   version      = "~> 2.5"
-#   project_id   = var.project_id
+module "asm-vpc" {
+  source  = "terraform-google-modules/network/google"
+  version = "~> 3.0"
 
-#   for_each = var.regions
-#   network_name = each.value.network_name
+  project_id   = var.project_id
+  network_name = var.vpc
+  routing_mode = "GLOBAL"
 
-#   subnets = [
-#     {
-#       subnet_name   =  each.value.subnet_name 
-#       subnet_ip     =  each.value.subnet_ip
-#       subnet_region =  each.value.subnet_region
-#     },
-#   ]
+  subnets = [
+    {
+      subnet_name   = var.subnet_name
+      subnet_ip     = var.subnet_ip
+      subnet_region = var.region
+    },
+  ]
 
-#   secondary_ranges = {
-#     (each.value.subnet_name) = [
-#       {
-#         range_name    = each.value.secondary_ranges_pods_name
-#         ip_cidr_range = each.value.secondary_ranges_pods_ips
-#       },
-#       {
-#         range_name    = each.value.secondary_ranges_services_name
-#         ip_cidr_range = each.value.secondary_ranges_services_ips
-#       },
-#   ] }
-#     depends_on                  = [time_sleep.wait_120_seconds]
-# }
+  secondary_ranges = {
+    "${var.subnet_name}" = [
+      {
+        range_name    = "${var.subnet_name}-pod-cidr"
+        ip_cidr_range = var.pod_cidr
+      },
+      {
+        range_name    = "${var.subnet_name}-svc1-cidr"
+        ip_cidr_range = var.svc1_cidr
+      },
+      {
+        range_name    = "${var.subnet_name}-svc2-cidr"
+        ip_cidr_range = var.svc2_cidr
+      },
+    ]
+  }
+
+  firewall_rules = [{
+    name        = "allow-all-10"
+    description = "Allow Pod to Pod connectivity"
+    direction   = "INGRESS"
+    ranges      = ["10.0.0.0/8"]
+    allow = [{
+      protocol = "tcp"
+      ports    = ["0-65535"]
+    }]
+  }]
+}

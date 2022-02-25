@@ -6,3 +6,7 @@ output "cluster_location" {
 output "cluster_name" {
   value = module.gke.name
 }
+
+# output "master_authorized_networks" {
+#   value = module.gke.master_authorized_networks.cloudshell.cidr_block
+# }
