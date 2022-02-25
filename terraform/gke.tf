@@ -1,9 +1,19 @@
 resource "null_resource" "previous" {}
 
 resource "time_sleep" "wait_120_seconds" {
-  depends_on = [null_resource.previous]
+  depends_on = [null_resource.enable_mesh]
 
   create_duration = "120s"
+}
+
+resource "null_resource" "enable_mesh" {
+
+  provisioner "local-exec" {
+    when    = create
+    command = "echo y | gcloud container hub mesh enable --project ${var.project_id}"
+  }
+
+  depends_on = [null_resource.previous]
 }
 
 module "enabled_google_apis" {
