@@ -1,93 +1,61 @@
-# Build GKE cluster and deploy Anthos Service Mesh on the cluster.
+# Installing Anthos Service Mesh on GKE with ASM Terraform module.
 
-# Pre-requistes 
+## Prerequistes 
 
-1. Install Google Cloud SDK
-2. Install Terraform
-3. Active Anthos trial license
+1. This tutorial has been tested on [Cloud Shell](https://shell.cloud.google.com) which comes preinstalled with [Google Cloud SDK](https://cloud.google.com/sdk) and [Terraform](https://www.terraform.io/) which are required to complete this tutorial.
 
-## Steps to deploy the terraform
+2. It is recommended to start the tutorial in a fresh project since the easiest way to clean up once complete is to delete the project. See [here](https://cloud.google.com/resource-manager/docs/creating-managing-projects) for more details.
 
-1. Clone this repo
-1. Set variables that will be used in multiple commands:
+## Deploy resources using Terraform
 
-    ```bash
-    FOLDER_ID = [FOLDER]
-    BILLING_ACCOUNT = [BILLING_ACCOUNT]
-    PROJECT_ID = [PROJECT_ID]
+1. Define the environment variable and set project.
+
+    ```
+    export PROJECT=PROJECT_ID
+    gcloud config set project ${PROJECT}
     ```
 
-1. Create project:
+1. Create a working directory, clone this repo and switch to the appropriate branch
 
     ```bash
-    gcloud auth login
-    gcloud projects create $PROJECT_ID --name=$PROJECT_ID --folder=$FOLDER_ID
-    gcloud alpha billing projects link $PROJECT_ID --billing-account $BILLING_ACCOUNT
-    gcloud config set project $PROJECT_ID
-    ```
-1. Enable the compute api for the project:
-
-    ```bash
-    gcloud services enable compute.googleapis.com --project $PROJECT_ID
-
-    The output is similar to the following:
-    Operation "operations/acf.p2-42486643714-242126b9-b72c-49fb-b4b4-53d4dae2101e" finished successfully.
+    mkdir ~/asm-tutorial && cd ~/asm-tutorial
+    git clone https://github.com/alizaidis/terraform-asm-sample.git
+    cd terraform-asm-sample
+    git checkout az-2
     ```
 
-
-1. Enable the service mesh feature:
-
-    ```bash
-    gcloud container hub mesh enable --project $PROJECT_ID
-
-    The output is similar to the following:
-
-    Enabling service [meshconfig.googleapis.com] on project [xxx]...
-    Operation "operations/acat.p2-1063239217441-cd1763ba-264c-4ec2-9346-2e046fc03062" finished successfully.
-    API [gkehub.googleapis.com] not enabled on project [1063239217441]. Would you like to enable and retry (this will take a few minutes)? (y/N)?  y
-
-    Enabling service [gkehub.googleapis.com] on project [xxxx]...
-    Operation "operations/acat.p2-1063239217441-4a50584e-7ee4-4702-9b61-453ba2a5ba55" finished successfully.
-    Waiting for Feature Service Mesh to be created...done. 
-    ```
-
-1. Create cluster using terraform using defaults other than the project:
+1. Initialize, plan and apply Terraform to create VPC, Subnet, GKE cluster with private nodes and ASM. Provide the project ID for your Google Cloud project when the Terraform plan and apply steps ask for it.
 
     ```bash
-    # obtain user access credentials to use for Terraform commands
-    gcloud auth application-default login
-
-    # continue in /terraform directory
     cd terraform
-    export TF_VAR_project_id=$PROJECT_ID
     terraform init
     terraform plan
     terraform apply
     ```
-   NOTE: if you get an error due to default network not being present, run `gcloud compute networks create default --subnet-mode=auto` and retry the commands.
 
-1. To verify things have sync'ed, you can use `gcloud` to check status:
+## Verify successful ASM installation
+
+1. Verify that the GKE cluster membership to a Fleet was successful:
 
     ```bash
-    gcloud alpha container hub memberships list --project $PROJECT_ID
+    gcloud container hub memberships list --project $PROJECT_ID
     ```
 
-1. To review the state the of asm installation, lets inspect the cluster:
+1. Inspect GKE cluster to verify that ASM was installed correctly. Start by getting cluster credentials.
 
     ```bash
-    # get values from cluster that was created
+    gcloud container clusters get-credentials "asm-cluster-1" --zone "us-central1-c" --project $PROJECT_ID
+    ```
 
+1. Inspect the status of controlplanerevision CustomResource.
 
-    # First lets get the credentials for the GKE cluster 
-    gcloud container clusters get-credentials "asm-cluster-1"--region "us-central1"--project $PROJECT_ID
-
-
-    # Inspect the state of controlplanerevision CustomResource
+    ```bash
     kubectl describe controlplanerevision asm-managed -n istio-system
-    
+    ```
+
     The output is similar to the following:
 
-
+    ```
         Name:         asm-managed
         Namespace:    istio-system
         Labels:       mesh.cloud.google.com/managed-cni-enabled=true
@@ -147,24 +115,30 @@
             Status:                False
             Type:                  Stalled
         Events:                    <none>
-
+    ```
     
-    # Review the status of the controlplanerevision custom resource named asm-managed, the RECONCILED field should be set to True.
+1. Review the status of the controlplanerevision custom resource named asm-managed, the `RECONCILED` field should be set to `True`.
+    
+    ```bash
     kubectl get controlplanerevisions -n istio-system
+    ```
 
     The output is similar to the following:
 
-
+    ```bash
             NAME          RECONCILED   STALLED   AGE
             asm-managed   True         False     14m
+    ```
 
-    # Review the configmaps in the istio-system namespace.
+1. Review the `ConfigMaps` in the istio-system namespace.
 
+    ```bash
     kubectl get configmaps -n istio-system
+    ```
 
     The output is similar to the following:
-
-
+ 
+    ```bash
         NAME                   DATA   AGE
         asm-options            1      20m
         env-asm-managed        3      8m2s
@@ -173,17 +147,12 @@
         istio-leader           0      8m1s
         kube-root-ca.crt       1      20m
         mdp-eviction-leader    0      12m
-
-
-
     ```
 
-1. Finally, let's clean up. Apply `terraform destroy` to remove the GCP resources that were deployed to the project.
+## Clean up
+
+1. The easiest way to prevent continued billing for the resources that you created for this tutorial is to delete the project you created for the tutorial. Run the following command from Cloud Shell and enter `y` when asked to confirm.
 
    ```bash
-    Disable the service mesh feature:
-
-    gcloud container hub mesh disable --project $PROJECT_ID
-
-    terraform destroy -var=project_id=$PROJECT_ID
+    gcloud projects delete $PROJECT_ID
     ```
