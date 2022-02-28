@@ -8,7 +8,7 @@
 
 ## Deploy resources using Terraform
 
-1. Define the environment variable and set project. Replace `YOUR_PROJECT_ID` with a fresh project you created for this tutorial.
+1. Define the environment variable and set project. Replace `YOUR_PROJECT_ID` with that of a fresh project you created for this tutorial.
 
     ```
     export PROJECT_ID=YOUR_PROJECT_ID
