@@ -8,11 +8,11 @@
 
 ## Deploy resources using Terraform
 
-1. Define the environment variable and set project.
+1. Define the environment variable and set project. Replace `YOUR_PROJECT_ID` with a fresh project you created for this tutorial.
 
     ```
-    export PROJECT=PROJECT_ID
-    gcloud config set project ${PROJECT}
+    export PROJECT_ID=YOUR_PROJECT_ID
+    gcloud config set project ${PROJECT_ID}
     ```
 
 1. Create a working directory, clone this repo and switch to the appropriate branch
