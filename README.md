@@ -44,7 +44,7 @@
 1. Inspect GKE cluster to verify that ASM was installed correctly. Start by getting cluster credentials.
 
     ```bash
-    gcloud container clusters get-credentials "asm-cluster-1" --zone "us-central1-c" --project $PROJECT_ID
+    gcloud container clusters get-credentials "asm-cluster-1" --region "us-central1" --project $PROJECT_ID
     ```
 
 1. Inspect the status of controlplanerevision CustomResource.
