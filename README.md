@@ -8,28 +8,29 @@
 
 ## Deploy resources using Terraform
 
-1. Define the environment variables and set project. Replace `YOUR_PROJECT_ID` with that of a fresh project you created for this tutorial. Set the values of `GKE_CHANNEL` and `ASM_CHANNEL`
+1. Define the environment variables and set project. Replace `YOUR_PROJECT_ID` with that of a fresh project you created for this tutorial. Set the values of `GKE_CHANNEL` and `ASM_CHANNEL` according to your requirements.
 
     ```
     export PROJECT_ID=YOUR_PROJECT_ID
     export GKE_CHANNEL="REGULAR"
-    export ASM_CHANNEL="REGULAR"
+    export ASM_CHANNEL="regular"
     gcloud config set project ${PROJECT_ID}
     ```
 
 1. Create a working directory, clone this repo and switch to the appropriate branch
 
     ```bash
-    mkdir ~/asm-tutorial && cd ~/asm-tutorial
+    mkdir ~/asm-tutorial && cd ~/asm-tutorial && export WORKDIR=$(pwd)
     git clone https://github.com/alizaidis/terraform-asm-sample.git
     cd terraform-asm-sample
     git checkout az-1
     ```
 
-1. Initialize, plan and apply Terraform to create VPC, Subnet, GKE cluster with private nodes and ASM. Provide the project ID for your Google Cloud project when the Terraform plan and apply steps ask for it.
+1. Initialize, plan and apply Terraform to create VPC, Subnet, GKE cluster with private nodes and ASM. Type `yes` when Terraform apply asks to confirm.
 
     ```bash
     cd terraform
+    envsubst < variables.tf.tmpl > variables.tf
     terraform init
     terraform plan
     terraform apply
@@ -156,5 +157,7 @@
 1. The easiest way to prevent continued billing for the resources that you created for this tutorial is to delete the project you created for the tutorial. Run the following command from Cloud Shell and enter `y` when asked to confirm.
 
    ```bash
-    gcloud projects delete $PROJECT_ID
+    gcloud config unset project
+    echo y | gcloud projects delete $PROJECT_ID
+    rm -rf $WORKDIR
     ```

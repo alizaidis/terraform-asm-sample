@@ -49,7 +49,7 @@ module "gke" {
   version                    = "~> 16.0"
   project_id                 = module.enabled_google_apis.project_id
   name                       = "asm-cluster-1"
-  release_channel            = var.gke_channel
+  release_channel            = "${var.gke_channel}"
   region                     = var.region
   zones                      = [var.zone]
   initial_node_count         = 4
