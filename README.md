@@ -8,10 +8,12 @@
 
 ## Deploy resources using Terraform
 
-1. Define the environment variable and set project. Replace `YOUR_PROJECT_ID` with that of a fresh project you created for this tutorial.
+1. Define the environment variables and set project. Replace `YOUR_PROJECT_ID` with that of a fresh project you created for this tutorial. Set the values of `GKE_CHANNEL` and `ASM_CHANNEL`
 
     ```
     export PROJECT_ID=YOUR_PROJECT_ID
+    export GKE_CHANNEL="REGULAR"
+    export ASM_CHANNEL="REGULAR"
     gcloud config set project ${PROJECT_ID}
     ```
 
@@ -21,7 +23,7 @@
     mkdir ~/asm-tutorial && cd ~/asm-tutorial
     git clone https://github.com/alizaidis/terraform-asm-sample.git
     cd terraform-asm-sample
-    git checkout az-2
+    git checkout az-1
     ```
 
 1. Initialize, plan and apply Terraform to create VPC, Subnet, GKE cluster with private nodes and ASM. Provide the project ID for your Google Cloud project when the Terraform plan and apply steps ask for it.

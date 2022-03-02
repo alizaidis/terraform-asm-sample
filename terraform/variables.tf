@@ -1,6 +1,7 @@
 variable "project_id" {
   type        = string
   description = "The GCP project where the cluster will be created"
+  default     = "$PROJECT_ID"
 }
 
 variable "region" {
@@ -48,4 +49,19 @@ variable "svc2_cidr" {
   type        = string
   description = "CIDR range for services"
   default = "10.100.1.0/24"
+}
+
+variable "gke_channel" {
+  type = string
+  default = "$GKE_CHANNEL"
+}
+
+variable "asm_channel" {
+  type = string
+  default = "$ASM_CHANNEL"
+}
+
+variable "cni_enabled" {
+  type = bool
+  default = false
 }
