@@ -47,7 +47,7 @@
     gcloud container clusters get-credentials "asm-cluster-1" --region "us-central1" --project $PROJECT_ID
     ```
 
-1. Inspect the status of controlplanerevision CustomResource.
+1. Inspect the status of controlplanerevision CustomResource. Note values of fields under `Conditions`, you should see that `Reason` is set to `Provisioned` and that the provisioning process has completed successfully.
 
     ```bash
     kubectl describe controlplanerevision asm-managed -n istio-system
