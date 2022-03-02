@@ -14,6 +14,7 @@
     export PROJECT_ID=YOUR_PROJECT_ID
     export GKE_CHANNEL="REGULAR"
     export ASM_CHANNEL="regular"
+    export ENABLE_CNI="false"
     gcloud config set project ${PROJECT_ID}
     ```
 
