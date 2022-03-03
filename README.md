@@ -8,12 +8,12 @@
 
 ## Deploy resources using Terraform
 
-1. Define the environment variables and set project. Replace `YOUR_PROJECT_ID` with that of a fresh project you created for this tutorial. Set the values of `TF_VAR_GKE_CHANNEL` and `TF_VAR_ENABLE_CNI` according to your requirements.
+1. Define the environment variables and set project. Replace `YOUR_PROJECT_ID` with that of a fresh project you created for this tutorial. Set the values of `GKE_CHANNEL` and `ENABLE_CNI` according to your requirements.
 
     ```
     export PROJECT_ID=YOUR_PROJECT_ID
-    export TF_VAR_GKE_CHANNEL="REGULAR"
-    export TF_VAR_ENABLE_CNI="false"
+    export GKE_CHANNEL="REGULAR"
+    export ENABLE_CNI="false"
     gcloud config set project ${PROJECT_ID}
     ```
 

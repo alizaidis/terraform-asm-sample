@@ -1,7 +1,7 @@
 variable "project_id" {
   type        = string
   description = "The GCP project where the cluster will be created"
-  default     = "$TF_VAR_PROJECT_ID"
+  default     = "$PROJECT_ID"
 }
 
 variable "region" {
@@ -53,10 +53,10 @@ variable "svc2_cidr" {
 
 variable "gke_channel" {
   type = string
-  default = "$TF_VAR_GKE_CHANNEL"
+  default = "$GKE_CHANNEL"
 }
 
 variable "enable_cni" {
   type = bool
-  default = "$TF_VAR_ENABLE_CNI"
+  default = "$ENABLE_CNI"
 }
