@@ -25,7 +25,7 @@ resource "null_resource" "enable_mesh" {
   depends_on = [module.enabled_google_apis]
 }
 
-resource "time_sleep" "wait_120_seconds" {
+resource "time_sleep" "wait_150_seconds" {
   depends_on = [null_resource.enable_mesh]
 
   create_duration = "150s"
