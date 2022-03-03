@@ -1,7 +1,7 @@
 resource "null_resource" "previous" {}
 
 resource "time_sleep" "wait_120_seconds" {
-  depends_on = [null_resource.enable_mesh]
+  depends_on = [null_resource.previous]
 
   create_duration = "120s"
 }
@@ -13,7 +13,7 @@ resource "null_resource" "enable_mesh" {
     command = "echo y | gcloud container hub mesh enable --project ${var.project_id}"
   }
 
-  depends_on = [null_resource.previous]
+  depends_on = [module.enabled_google_apis]
 }
 
 module "enabled_google_apis" {
@@ -24,16 +24,17 @@ module "enabled_google_apis" {
   disable_services_on_destroy = false
 
   activate_apis = [
+    "cloudapis.googleapis.com",
     "compute.googleapis.com",
     "anthos.googleapis.com",
-    "mesh.googleapis.com"
+    "mesh.googleapis.com",
+    "cloudresourcemanager.googleapis.com"
   ]
- 
+  depends_on = [null_resource.previous]
 }
 
 
-
-# google_client_config and kubernetes provider must be explicitly specified like the following.
+# google_client_config and kubernetes provider must be explicitly specified like the following for every cluster.
 
 data "google_client_config" "default" {}
 
@@ -44,7 +45,7 @@ provider "kubernetes" {
 }
 
 module "gke" {
-  depends_on                 = [time_sleep.wait_120_seconds]
+  depends_on                 = [time_sleep.wait_120_seconds, module.asm-vpc]
   source                     = "terraform-google-modules/kubernetes-engine/google//modules/beta-private-cluster"
   version                    = "~> 16.0"
   project_id                 = module.enabled_google_apis.project_id

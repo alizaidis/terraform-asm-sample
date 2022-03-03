@@ -56,12 +56,7 @@ variable "gke_channel" {
   default = "$GKE_CHANNEL"
 }
 
-variable "asm_channel" {
-  type = string
-  default = "$ASM_CHANNEL"
-}
-
 variable "enable_cni" {
   type = bool
-  default = $ENABLE_CNI
+  default = "$ENABLE_CNI"
 }
