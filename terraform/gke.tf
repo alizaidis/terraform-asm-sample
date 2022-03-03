@@ -1,22 +1,37 @@
 resource "null_resource" "previous" {}
 
 
-resource "google_project_service" "project_services" {
-  for_each = toset([
+# resource "google_project_service" "project_services" {
+#   for_each = toset([
+#     "compute.googleapis.com",
+#     "anthos.googleapis.com",
+#     "mesh.googleapis.com"
+#   ])
+
+#   service = each.key
+
+#   project            = var.project_id
+#   disable_on_destroy = true
+#   disable_dependent_services = true
+# }
+
+module "enabled_google_apis" {
+  source  = "terraform-google-modules/project-factory/google//modules/project_services"
+  version = "~> 10.0"
+
+  project_id                  = var.project_id
+  disable_services_on_destroy = false
+
+  activate_apis = [
     "compute.googleapis.com",
     "anthos.googleapis.com",
     "mesh.googleapis.com"
-  ])
-
-  service = each.key
-
-  project            = var.project_id
-  disable_on_destroy = true
-  disable_dependent_services = true
+  ]
+  depends_on = [null_resource.previous]
 }
 
 resource "time_sleep" "wait_120_seconds" {
-  depends_on = [google_project_service.project_services]
+  depends_on = [module.enabled_google_apis]
 
   create_duration = "120s"
 }
