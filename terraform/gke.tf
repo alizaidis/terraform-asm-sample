@@ -25,10 +25,10 @@ resource "null_resource" "enable_mesh" {
   depends_on = [module.enabled_google_apis]
 }
 
-resource "time_sleep" "wait_150_seconds" {
+resource "time_sleep" "wait_200_seconds" {
   depends_on = [null_resource.enable_mesh]
 
-  create_duration = "150s"
+  create_duration = "200s"
 }
 
 # google_client_config and kubernetes provider must be explicitly specified like the following for every cluster.
@@ -42,7 +42,7 @@ provider "kubernetes" {
 }
 
 module "gke" {
-  depends_on                 = [time_sleep.wait_120_seconds]
+  depends_on                 = [time_sleep.wait_200_seconds]
   source                     = "terraform-google-modules/kubernetes-engine/google//modules/beta-private-cluster"
   version                    = "~> 16.0"
   project_id                 = module.enabled_google_apis.project_id
