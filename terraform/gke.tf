@@ -1,21 +1,5 @@
 resource "null_resource" "previous" {}
 
-resource "time_sleep" "wait_120_seconds" {
-  depends_on = [null_resource.enable_mesh]
-
-  create_duration = "120s"
-}
-
-resource "null_resource" "enable_mesh" {
-
-  provisioner "local-exec" {
-    when    = create
-    command = "echo y | gcloud container hub mesh enable --project ${var.project_id}"
-  }
-
-  depends_on = [null_resource.previous]
-}
-
 module "enabled_google_apis" {
   source  = "terraform-google-modules/project-factory/google//modules/project_services"
   version = "~> 10.0"
@@ -28,12 +12,26 @@ module "enabled_google_apis" {
     "anthos.googleapis.com",
     "mesh.googleapis.com"
   ]
- 
+  depends_on = [null_resource.previous]
 }
 
+resource "null_resource" "enable_mesh" {
 
+  provisioner "local-exec" {
+    when    = create
+    command = "echo y | gcloud container hub mesh enable --project ${var.project_id}"
+  }
 
-# google_client_config and kubernetes provider must be explicitly specified like the following.
+  depends_on = [module.enabled_google_apis]
+}
+
+resource "time_sleep" "wait_120_seconds" {
+  depends_on = [null_resource.enable_mesh]
+
+  create_duration = "150s"
+}
+
+# google_client_config and kubernetes provider must be explicitly specified like the following for every cluster.
 
 data "google_client_config" "default" {}
 

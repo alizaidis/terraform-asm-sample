@@ -53,15 +53,10 @@ variable "svc2_cidr" {
 
 variable "gke_channel" {
   type = string
-  default = "$GKE_CHANNEL"
-}
-
-variable "asm_channel" {
-  type = string
-  default = "$ASM_CHANNEL"
+  default = "$TF_VAR_GKE_CHANNEL"
 }
 
 variable "enable_cni" {
   type = bool
-  default = $ENABLE_CNI
+  default = $TF_VAR_ENABLE_CNI
 }
