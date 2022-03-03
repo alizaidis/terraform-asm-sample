@@ -1,19 +1,40 @@
 resource "null_resource" "previous" {}
 
-module "enabled_google_apis" {
-  source  = "terraform-google-modules/project-factory/google//modules/project_services"
-  version = "~> 10.0"
 
-  project_id                  = var.project_id
-  disable_services_on_destroy = false
-
-  activate_apis = [
+resource "google_project_service" "project_services" {
+  for_each = toset([
     "compute.googleapis.com",
     "anthos.googleapis.com",
     "mesh.googleapis.com"
-  ]
-  depends_on = [null_resource.previous]
+  ])
+
+  service = each.key
+
+  project            = var.project_id
+  disable_on_destroy = true
+  disable_dependent_services = true
 }
+
+resource "time_sleep" "wait_120_seconds" {
+  depends_on = [resource.project_services]
+
+  create_duration = "120s"
+}
+
+# module "enabled_google_apis" {
+#   source  = "terraform-google-modules/project-factory/google//modules/project_services"
+#   version = "~> 10.0"
+
+#   project_id                  = var.project_id
+#   disable_services_on_destroy = false
+
+#   activate_apis = [
+#     "compute.googleapis.com",
+#     "anthos.googleapis.com",
+#     "mesh.googleapis.com"
+#   ]
+#   depends_on = [null_resource.previous]
+# }
 
 resource "null_resource" "enable_mesh" {
 
@@ -22,14 +43,15 @@ resource "null_resource" "enable_mesh" {
     command = "echo y | gcloud container hub mesh enable --project ${var.project_id}"
   }
 
-  depends_on = [module.enabled_google_apis]
+  depends_on = [resource.wait_120_seconds]
 }
 
-resource "time_sleep" "wait_200_seconds" {
+resource "time_sleep" "wait_90_seconds" {
   depends_on = [null_resource.enable_mesh]
 
-  create_duration = "200s"
+  create_duration = "90s"
 }
+
 
 # google_client_config and kubernetes provider must be explicitly specified like the following for every cluster.
 
@@ -42,7 +64,7 @@ provider "kubernetes" {
 }
 
 module "gke" {
-  depends_on                 = [time_sleep.wait_200_seconds]
+  depends_on                 = [time_sleep.wait_90_seconds]
   source                     = "terraform-google-modules/kubernetes-engine/google//modules/beta-private-cluster"
   version                    = "~> 16.0"
   project_id                 = module.enabled_google_apis.project_id
