@@ -41,4 +41,5 @@ module "asm-vpc" {
       ports    = ["0-65535"]
     }]
   }]
+  depends_on = [time_sleep.wait_120_seconds]
 }
