@@ -58,7 +58,7 @@ resource "null_resource" "enable_mesh" {
     command = "echo y | gcloud container hub mesh enable --project ${var.project_id}"
   }
 
-  depends_on = [resource.wait_120_seconds]
+  depends_on = [resource.time_sleep.wait_120_seconds]
 }
 
 resource "time_sleep" "wait_90_seconds" {
