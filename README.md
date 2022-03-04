@@ -22,14 +22,12 @@
     ```bash
     mkdir ~/asm-tutorial && cd ~/asm-tutorial && export WORKDIR=$(pwd)
     git clone https://github.com/alizaidis/terraform-asm-sample.git
-    cd terraform-asm-sample
-    git checkout az-1
+    cd terraform-asm-sample/terraform
     ```
 
 1. Initialize, plan and apply Terraform to create VPC, Subnet, GKE cluster with private nodes and ASM. Type `yes` when Terraform apply asks to confirm.
 
     ```bash
-    cd terraform
     envsubst < variables.tf.tmpl > variables.tf
     terraform init
     terraform plan
