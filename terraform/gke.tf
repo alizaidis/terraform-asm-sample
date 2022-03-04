@@ -45,7 +45,7 @@ provider "kubernetes" {
 }
 
 module "gke" {
-  depends_on                 = [time_sleep.wait_120_seconds]
+  depends_on                 = [time_sleep.wait_120_seconds, module.asm-vpc]
   source                     = "terraform-google-modules/kubernetes-engine/google//modules/beta-private-cluster"
   version                    = "~> 16.0"
   project_id                 = module.enabled_google_apis.project_id
