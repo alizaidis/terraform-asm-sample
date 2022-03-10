@@ -12,7 +12,7 @@ resource "google_gke_hub_membership" "membership" {
 
 module "asm" {
   # depends_on = [module.gke.name, module.enabled_google_apis.activate_apis] 
-  source = "git::https://github.com/Monkeyanator/terraform-google-kubernetes-engine.git//modules/asm?ref=rewrite-asm-module"
+  source = "git::https://github.com/terraform-google-modules/terraform-google-kubernetes-engine.git//modules/asm?ref=v20.0.0"
   cluster_name     = module.gke.name
   cluster_location = var.region
   project_id = module.enabled_google_apis.project_id
