@@ -6,7 +6,7 @@
 
 2. It is recommended to start the tutorial in a fresh project since the easiest way to clean up once complete is to delete the project. See [here](https://cloud.google.com/resource-manager/docs/creating-managing-projects) for more details.
 
-## Deploy resources using Terraform
+## Deploy resources using Terraform.
 
 1. Define the environment variables and set project. Replace `YOUR_PROJECT_ID` with that of a fresh project you created for this tutorial. Set the values of `GKE_CHANNEL` and `ENABLE_CNI` according to your requirements.
 

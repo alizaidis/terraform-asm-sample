@@ -1,3 +1,4 @@
+# Module to create VPC for the GKE cluster
 module "asm-vpc" {
   source  = "terraform-google-modules/network/google"
   version = "~> 3.0"

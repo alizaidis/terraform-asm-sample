@@ -1,3 +1,4 @@
+#Module to create GKE cluster and enable APIs
 resource "null_resource" "previous" {}
 
 resource "time_sleep" "wait_120_seconds" {
