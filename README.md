@@ -1,5 +1,7 @@
 # Installing Anthos Service Mesh on GKE with ASM Terraform module.
 
+This tutorial provides a pattern to install [Anthos Service Mesh](https://cloud.google.com/service-mesh/docs/overview) with a managed control plane on a Google Kubernetes Engine (GKE) cluster using the [ASM Terraform module](https://github.com/terraform-google-modules/terraform-google-kubernetes-engine/tree/master/modules/asm).
+
 ## Prerequistes 
 
 1. This tutorial has been tested on [Cloud Shell](https://shell.cloud.google.com) which comes preinstalled with [Google Cloud SDK](https://cloud.google.com/sdk) and [Terraform](https://www.terraform.io/) which are required to complete this tutorial.
@@ -8,16 +10,7 @@
 
 ## Deploy resources using Terraform.
 
-1. Define the environment variables and set project. Replace `YOUR_PROJECT_ID` with that of a fresh project you created for this tutorial. Set the values of `GKE_CHANNEL` and `ENABLE_CNI` according to your requirements.
-
-    ```
-    export PROJECT_ID=YOUR_PROJECT_ID
-    export GKE_CHANNEL="REGULAR"
-    export ENABLE_CNI="false"
-    gcloud config set project ${PROJECT_ID}
-    ```
-
-1. Create a working directory, clone this repo and switch to the appropriate branch
+1. Create a working directory, clone this repo and switch to the repo directory.
 
     ```bash
     mkdir ~/asm-tutorial && cd ~/asm-tutorial && export WORKDIR=$(pwd)
@@ -25,10 +18,17 @@
     cd terraform-asm-sample/terraform
     ```
 
+1. Set your Google Cloud project and add. Replace `YOUR_PROJECT_ID` with that of a fresh project you created for this tutorial. Note that you can Set the values of Terraform variables in `variables.tf` like `gke_channel` and `enable_cni` according to your requirements; for this example they are set as `REGULAR` and `true`. For details on configurable options, see documentation for the [ASM Terraform module](https://github.com/terraform-google-modules/terraform-google-kubernetes-engine/tree/master/modules/asm). 
+
+    ```bash
+    export PROJECT_ID=YOUR_PROJECT_ID
+    echo "project_id = \"$PROJECT_ID\"" >> terraform.tfvars
+    ```
+
+
 1. Initialize, plan and apply Terraform to create VPC, Subnet, GKE cluster with private nodes and ASM. Type `yes` when Terraform apply asks to confirm.
 
     ```bash
-    envsubst < variables.tf.tmpl > variables.tf
     terraform init
     terraform plan
     terraform apply
