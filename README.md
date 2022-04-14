@@ -1,6 +1,6 @@
 # Installing Anthos Service Mesh on GKE with ASM Terraform module.
 
-This tutorial provides a pattern to install [Anthos Service Mesh](https://cloud.google.com/service-mesh/docs/overview) with a managed control plane on a Google Kubernetes Engine (GKE) cluster using the [ASM Terraform module](https://github.com/terraform-google-modules/terraform-google-kubernetes-engine/tree/master/modules/asm).
+This tutorial provides a pattern to install [Anthos Service Mesh](https://cloud.google.com/service-mesh/docs/overview) with a managed control plane on a [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/docs/concepts/kubernetes-engine-overview) (GKE) cluster using the [ASM Terraform module](https://github.com/terraform-google-modules/terraform-google-kubernetes-engine/tree/master/modules/asm).
 
 ## Prerequistes 
 
