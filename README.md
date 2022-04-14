@@ -1,4 +1,4 @@
-# Installing Anthos Service Mesh on GKE with ASM Terraform module.
+# Installing Managed Anthos Service Mesh on GKE with the ASM Terraform module.
 
 This tutorial provides a pattern to install [Anthos Service Mesh](https://cloud.google.com/service-mesh/docs/overview) with a managed control plane on a [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/docs/concepts/kubernetes-engine-overview) (GKE) cluster using the [ASM Terraform module](https://github.com/terraform-google-modules/terraform-google-kubernetes-engine/tree/master/modules/asm).
 
@@ -18,11 +18,12 @@ This tutorial provides a pattern to install [Anthos Service Mesh](https://cloud.
     cd terraform-asm-sample/terraform
     ```
 
-1. Set your Google Cloud project and add. Replace `YOUR_PROJECT_ID` with that of a fresh project you created for this tutorial. Note that you can Set the values of Terraform variables in `variables.tf` like `gke_channel` and `enable_cni` according to your requirements; for this example they are set as `REGULAR` and `true`. For details on configurable options, see documentation for the [ASM Terraform module](https://github.com/terraform-google-modules/terraform-google-kubernetes-engine/tree/master/modules/asm). 
+1. Export the `PROJECT_ID` environment variable; replace the value of `YOUR_PROJECT_ID` with that of a fresh project you created for this tutorial. Then set this as the active project in Cloud Shell and add a `terraform.tfvars` entry for the Project ID. Note that you can set the values of Terraform variables like `gke_channel` and `enable_cni` in the `variables.tf` file according to your requirements; for this example they are set as `REGULAR` and `true`. For details on configurable options, see documentation for the [ASM Terraform module](https://github.com/terraform-google-modules/terraform-google-kubernetes-engine/tree/master/modules/asm). 
 
     ```bash
     export PROJECT_ID=YOUR_PROJECT_ID
-    echo "project_id = \"$PROJECT_ID\"" >> terraform.tfvars
+    gcloud config set project $PROJECT_ID
+    echo "project_id = \"$PROJECT_ID\"" > terraform.tfvars
     ```
 
 
