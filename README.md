@@ -10,12 +10,12 @@ This tutorial provides a pattern to install [Anthos Service Mesh](https://cloud.
 
 ## Deploy resources using Terraform.
 
-1. Create a working directory, clone this repo and switch to the repo directory.
+1. Create a working directory, clone this repo and switch to the appropriate directory.
 
     ```bash
     mkdir ~/asm-tutorial && cd ~/asm-tutorial && export WORKDIR=$(pwd)
     git clone https://github.com/alizaidis/terraform-asm-sample.git
-    cd terraform-asm-sample/terraform
+    cd terraform-asm-sample
     ```
 
 1. Export the `PROJECT_ID` environment variable; replace the value of `YOUR_PROJECT_ID` with that of a fresh project you created for this tutorial. Then set this as the active project in Cloud Shell and add a `terraform.tfvars` entry for the Project ID. Note that you can set the values of Terraform variables like `gke_channel` and `enable_cni` in the `variables.tf` file according to your requirements; for this example they are set as `REGULAR` and `true`. For details on configurable options, see documentation for the [ASM Terraform module](https://github.com/terraform-google-modules/terraform-google-kubernetes-engine/tree/master/modules/asm). 
@@ -27,10 +27,18 @@ This tutorial provides a pattern to install [Anthos Service Mesh](https://cloud.
     ```
 
 
-1. Initialize, plan and apply Terraform to create VPC, Subnet, GKE cluster with private nodes and ASM. Type `yes` when Terraform apply asks to confirm.
+1. Create a Google Cloud Storage bucket to host the Terraform state data. 
 
     ```bash
-    terraform init
+    gsutil mb -p ${PROJECT_ID} gs://${PROJECT_ID}-tfstate
+    gsutil versioning set on gs://${PROJECT_ID}-tfstate
+    ```
+
+
+1. Initialize, plan and apply Terraform to create VPC, Subnets, Cloud Build private build pool and other resources. Review the proposed changes, type `yes` when Terraform apply asks to confirm.
+
+    ```bash
+    terraform init -backend-config="bucket=${PROJECT_ID}-tfstate"
     terraform plan
     terraform apply
     ```
@@ -153,7 +161,7 @@ This tutorial provides a pattern to install [Anthos Service Mesh](https://cloud.
 
 ## Clean up
 
-1. The easiest way to prevent continued billing for the resources that you created for this tutorial is to delete the project you created for the tutorial. Run the following command from Cloud Shell and enter `y` when asked to confirm.
+1. The easiest way to prevent continued billing for the resources that you created for this tutorial is to delete the project you created for the tutorial. Run the following commands from Cloud Shell to do this:
 
    ```bash
     gcloud config unset project
