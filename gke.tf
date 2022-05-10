@@ -34,7 +34,7 @@ resource "null_resource" "enable_mesh" {
 
 module "enabled_google_apis" {
   source  = "terraform-google-modules/project-factory/google//modules/project_services"
-  version = "~> 10.0"
+  version = "13.0.0"
 
   project_id                  = var.project_id
   disable_services_on_destroy = false
@@ -62,27 +62,27 @@ provider "kubernetes" {
 
 module "gke" {
   depends_on                 = [time_sleep.wait_120_seconds, module.asm-vpc]
-  source                     = "terraform-google-modules/kubernetes-engine/google//modules/beta-private-cluster"
-  version                    = "~> 16.0"
+  source                     = "terraform-google-modules/kubernetes-engine/google//modules/beta-autopilot-private-cluster"
+  version                    = "20.0.0"
   project_id                 = module.enabled_google_apis.project_id
   name                       = "asm-cluster-1"
   release_channel            = "${var.gke_channel}"
   region                     = var.region
-  zones                      = [var.zone]
-  initial_node_count         = 4
   network                    = var.vpc
   subnetwork                 = var.subnet_name
   ip_range_pods              = "${var.subnet_name}-pod-cidr"
   ip_range_services          = "${var.subnet_name}-svc1-cidr"
-  config_connector           = true
+  identity_namespace         = "enabled"
+  enable_vertical_pod_autoscaling = true
   enable_private_endpoint    = false
   enable_private_nodes       = true
   master_ipv4_cidr_block     = "172.16.0.0/28"
+  cluster_resource_labels = { "mesh_id" : "proj-${data.google_project.project.number}" }
 }
 
 module "workload_identity" {
   source              = "terraform-google-modules/kubernetes-engine/google//modules/workload-identity"
-  version             = "~> 16.0.1"
+  version             = "20.0.0"
   gcp_sa_name         = "cnrmsa"
   cluster_name        = module.gke.name
   name                = "cnrm-controller-manager"

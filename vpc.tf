@@ -15,7 +15,7 @@
 # Module to create VPC for the GKE cluster
 module "asm-vpc" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 3.0"
+  version = "5.0"
 
   project_id   = var.project_id
   network_name = var.vpc
@@ -56,5 +56,6 @@ module "asm-vpc" {
       ports    = ["0-65535"]
     }]
   }]
-  depends_on = [time_sleep.wait_120_seconds]
+  
+  depends_on = [module.enabled_google_apis, time_sleep.wait_120_seconds]
 }

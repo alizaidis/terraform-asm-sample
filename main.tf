@@ -27,7 +27,8 @@ resource "google_gke_hub_membership" "membership" {
 
 # Module to install ASM on the GKE cluster
 module "asm" {
-  source = "git::https://github.com/terraform-google-modules/terraform-google-kubernetes-engine.git//modules/asm?ref=v20.0.0"
+  source = "terraform-google-modules/kubernetes-engine/google//modules/asm"
+  version = "20.0.0"
   cluster_name     = module.gke.name
   cluster_location = var.region
   project_id = module.enabled_google_apis.project_id
